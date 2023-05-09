@@ -78,6 +78,7 @@ static uint16_t capMinThrust(float thrust, uint32_t minThrust) {
 
 static void powerDistributionLegacy(const control_t *control, motors_thrust_uncapped_t* motorThrustUncapped)
 {
+  // Roll and pitch halved
   int16_t r = control->roll / 2.0f;
   int16_t p = control->pitch / 2.0f;
 
