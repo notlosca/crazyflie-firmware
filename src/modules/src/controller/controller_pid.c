@@ -27,6 +27,9 @@ static float accelz;
 void controllerPidInit(void)
 {
   attitudeControllerInit(ATTITUDE_UPDATE_DT);
+
+  printf("Initializing the PID controller.");
+
   positionControllerInit();
 }
 
@@ -58,6 +61,9 @@ void controllerPid(control_t *control, const setpoint_t *setpoint,
                                          const state_t *state,
                                          const stabilizerStep_t stabilizerStep)
 {
+
+  printf("In the PID control loop.");
+
   control->controlMode = controlModeLegacy;
 
   if (RATE_DO_EXECUTE(ATTITUDE_RATE, stabilizerStep)) {
