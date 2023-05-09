@@ -221,6 +221,7 @@ static void batteryCompensation(const motors_thrust_uncapped_t* motorThrustUncap
 
   for (int motor = 0; motor < STABILIZER_NR_OF_MOTORS; motor++)
   {
+    // motorThrustUncapped->list[motor] is the thrust uncapped of that motor.
     motorThrustBatCompUncapped->list[motor] = motorsCompensateBatteryVoltage(motor, motorThrustUncapped->list[motor], supplyVoltage);
   }
 }
@@ -306,10 +307,10 @@ static void stabilizerTask(void* param)
       if (emergencyStop || (systemIsArmed() == false)) {
         motorsStop();
       } else {
-        powerDistribution(&control, &motorThrustUncapped);
-        batteryCompensation(&motorThrustUncapped, &motorThrustBatCompUncapped);
-        powerDistributionCap(&motorThrustBatCompUncapped, &motorPwm);
-        setMotorRatios(&motorPwm);
+        powerDistribution(&control, &motorThrustUncapped); // Pick the output of the controller and set the motor thrust uncapped
+        batteryCompensation(&motorThrustUncapped, &motorThrustBatCompUncapped); // Compensate the battery voltage for each motor. Return PWM ratio multiplied by UINT16_MAX (= 65355)
+        powerDistributionCap(&motorThrustBatCompUncapped, &motorPwm); // Limit it in the range 0 - UINT16_MAX
+        setMotorRatios(&motorPwm); 
       }
 
 #ifdef CONFIG_DECK_USD

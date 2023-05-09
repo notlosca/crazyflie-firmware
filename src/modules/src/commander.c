@@ -105,7 +105,7 @@ void commanderGetSetpoint(setpoint_t *setpoint, const state_t *state)
   uint32_t currentTime = xTaskGetTickCount();
 
   if ((currentTime - setpoint->timestamp) > COMMANDER_WDT_TIMEOUT_SHUTDOWN) {
-    memcpy(setpoint, &nullSetpoint, sizeof(nullSetpoint));
+    memcpy(setpoint, &nullSetpoint, sizeof(nullSetpoint)); // destination, source, size in byte to be copied. Both destination and source are pointers.
   } else if ((currentTime - setpoint->timestamp) > COMMANDER_WDT_TIMEOUT_STABILIZE) {
     xQueueOverwrite(priorityQueue, &priorityDisable);
     // Leveling ...
@@ -116,7 +116,8 @@ void commanderGetSetpoint(setpoint_t *setpoint, const state_t *state)
     setpoint->mode.yaw = modeVelocity;
     setpoint->attitude.roll = 0;
     setpoint->attitude.pitch = 0;
-    setpoint->attitudeRate.yaw = 0;
+    // printf(setpoint->attitudeRate.yaw);
+    setpoint->attitudeRate.yaw = 0; // Keep Yaw as it is. I do not want to make the drone to turn.
     // Keep Z as it is
   }
   // This copying is not strictly necessary because stabilizer.c already keeps
